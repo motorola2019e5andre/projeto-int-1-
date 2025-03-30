@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clínica Mentalize | Sistema Completo</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <h1>Clínica Mentalize</h1>
+        <p>Atendimento Psicológico</p>
+    </header>
+
+    <div class="login-area">
+        <span id="userGreeting" class="user-info"></span>
+        <div id="loginSection">
+            <button id="loginBtn" class="admin-btn add-btn">Área do Profissional</button>
+        </div>
+        <div id="logoutSection" style="display: none;">
+            <button id="logoutBtn" class="admin-btn delete-btn">Sair</button>
+        </div>
+    </div>
+
+    <nav>
+        <a href="#agendamento" class="active">Agendamentos</a>
+        <a href="#prontuario">Prontuários</a>
+        <a href="#pacientes">Pacientes</a>
+        <a href="#profissionais">Profissionais</a>
+        <a href="#localizacao">Localização</a>
+        <a href="#contato">Contato</a>
+    </nav>
+
+    <div class="container">
+        <!-- Área Pública -->
+        <div id="areaPublica">
+            <!-- Seções públicas serão carregadas aqui -->
+        </div>
+
+        <!-- Área do Profissional -->
+        <div id="areaProfissional" style="display: none;">
+            <!-- Seções privadas serão carregadas aqui -->
+        </div>
+    </div>
+
+    <!-- Modais -->
+    <div id="loginModal" class="modal">
+        <!-- Conteúdo do modal de login -->
+    </div>
+
+    <div id="cadastroModal" class="modal">
+        <!-- Conteúdo do modal de cadastro -->
+    </div>
+
+    <div id="confirmModal" class="modal">
+        <!-- Conteúdo do modal de confirmação -->
+    </div>
+
+    <footer>
+        <p>© 2024 Clínica Mentalize | Atendimento Psicológico - Todos os direitos reservados</p>
+    </footer>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
