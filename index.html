@@ -1,65 +1,238 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clínica Mentalize | Sistema Completo</title>
-    <link rel="stylesheet" href="css/style.css">
+    <title>Clínica Mentalize | Sistema de Agendamentos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+
+        header {
+            background-color: #003cff;
+            color: #fff;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.5em;
+        }
+
+        nav {
+            background-color: #fff;
+            padding: 15px 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        nav a {
+            color: #003cff;
+            text-decoration: none;
+            font-weight: bold;
+            margin: 0 15px;
+            padding: 5px 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        nav a:hover {
+            background-color: #003cff;
+            color: white;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+
+        .card {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .card h2 {
+            color: #003cff;
+            border-bottom: 2px solid #003cff;
+            padding-bottom: 10px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        form input, form select, form textarea {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+
+        form button {
+            background-color: #003cff;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: background-color 0.3s;
+        }
+
+        form button:hover {
+            background-color: #002aa3;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        table th, table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        table th {
+            background-color: #003cff;
+            color: white;
+        }
+
+        table tr:hover {
+            background-color: #f0f6ff;
+        }
+
+        footer {
+            background-color: #003cff;
+            color: #fff;
+            text-align: center;
+            padding: 15px 0;
+            margin-top: 30px;
+        }
+
+        .login-area {
+            text-align: right;
+            padding: 10px;
+            background-color: #e6f0ff;
+        }
+
+        /* Estilo do Mapa */
+        .map-container {
+            margin-top: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .map-container iframe {
+            width: 100%;
+            height: 400px;
+            border: none;
+        }
+    </style>
 </head>
 <body>
+
     <header>
         <h1>Clínica Mentalize</h1>
         <p>Atendimento Psicológico</p>
     </header>
 
     <div class="login-area">
-        <span id="userGreeting" class="user-info"></span>
-        <div id="loginSection">
-            <button id="loginBtn" class="admin-btn add-btn">Área do Profissional</button>
-        </div>
-        <div id="logoutSection" style="display: none;">
-            <button id="logoutBtn" class="admin-btn delete-btn">Sair</button>
-        </div>
+        <a href="#login">Área do Profissional</a>
     </div>
 
     <nav>
-        <a href="#agendamento" class="active">Agendamentos</a>
+        <a href="#agendamento">Agendamentos</a>
         <a href="#prontuario">Prontuários</a>
         <a href="#pacientes">Pacientes</a>
-        <a href="#profissionais">Profissionais</a>
         <a href="#localizacao">Localização</a>
         <a href="#contato">Contato</a>
     </nav>
 
     <div class="container">
-        <!-- Área Pública -->
-        <div id="areaPublica">
-            <!-- Seções públicas serão carregadas aqui -->
-        </div>
+        <!-- Seção de Agendamento -->
+        <section id="agendamento" class="card">
+            <h2>Agendar Consulta</h2>
+            <form>
+                <input type="text" placeholder="Nome do Paciente" required>
+                <input type="date" placeholder="Data" required>
+                <input type="time" placeholder="Hora" required>
+                <select required>
+                    <option value="">Selecione o Profissional</option>
+                    <option value="psicologo1">Dra. Ana Silva</option>
+                    <option value="psicologo2">Dr. Carlos Mendes</option>
+                </select>
+                <textarea placeholder="Observações" rows="3"></textarea>
+                <button type="submit">Agendar Consulta</button>
+            </form>
+        </section>
 
-        <!-- Área do Profissional -->
-        <div id="areaProfissional" style="display: none;">
-            <!-- Seções privadas serão carregadas aqui -->
-        </div>
-    </div>
+        <!-- Seção de Prontuários -->
+        <section id="prontuario" class="card">
+            <h2>Prontuários</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Paciente</th>
+                        <th>Última Consulta</th>
+                        <th>Prontuário</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Maria Oliveira</td>
+                        <td>15/03/2024</td>
+                        <td><a href="#ver">Visualizar</a></td>
+                    </tr>
+                    <tr>
+                        <td>João Santos</td>
+                        <td>10/03/2024</td>
+                        <td><a href="#ver">Visualizar</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
 
-    <!-- Modais -->
-    <div id="loginModal" class="modal">
-        <!-- Conteúdo do modal de login -->
-    </div>
+        <!-- Seção de Localização (NOVO!) -->
+        <section id="localizacao" class="card">
+            <h2>Onde Estamos</h2>
+            <p><strong>Endereço:</strong> Av. Paulista, 1000 - Bela Vista, São Paulo/SP</p>
+            <div class="map-container">
+                <iframe 
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3657.1975844558826!2d-46.7434858!3d-23.2844697!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94cee7e0d3c98ae1%3A0x33f7316f02eba800!2sMentalize%20Psicologia!5e0!3m2!1spt-BR!2sbr!4v1711927371234!5m2!1spt-BR!2sbr" 
+                    allowfullscreen="" 
+                    loading="lazy" 
+                    referrerpolicy="no-referrer-when-downgrade">
+                </iframe>
+            </div>
+        </section>
 
-    <div id="cadastroModal" class="modal">
-        <!-- Conteúdo do modal de cadastro -->
-    </div>
-
-    <div id="confirmModal" class="modal">
-        <!-- Conteúdo do modal de confirmação -->
+        <!-- Seção de Contato -->
+        <section id="contato" class="card">
+            <h2>Contato</h2>
+            <p><strong>Telefone:</strong> (11) 1234-5678</p>
+            <p><strong>E-mail:</strong> contato@clinicamentalize.com.br</p>
+        </section>
     </div>
 
     <footer>
-        <p>© 2024 Clínica Mentalize | Atendimento Psicológico - Todos os direitos reservados</p>
+        <p>© Clínica Mentalize | Atendimento Psicológico - Todos os direitos reservados</p>
     </footer>
 
-    <script src="js/script.js"></script>
 </body>
 </html>
