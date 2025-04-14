@@ -33,7 +33,7 @@ app.get('/health', async (req, res) => {
 });
 
 // Rota de Agendamentos (POST)
-app.post('https://projeto-int-1-1.onrender.com/api/agendamentos', async (req, res) => {
+app.post('https://projeto-int-1-1.onrender.com/', async (req, res) => {
   console.log('Dados recebidos:', req.body);
   
   try {
