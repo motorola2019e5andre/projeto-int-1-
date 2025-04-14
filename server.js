@@ -33,7 +33,7 @@ app.get('/health', async (req, res) => {
 });
 
 // Rota de Agendamentos (POST)
-app.post('/api/agendamentos', async (req, res) => {
+app.post('https://projeto-int-1-1.onrender.com/api/agendamentos', async (req, res) => {
   console.log('Dados recebidos:', req.body);
   
   try {
@@ -68,7 +68,7 @@ app.post('/api/agendamentos', async (req, res) => {
 });
 
 // Inicia o servidor
-const PORT = process.env.PORT || 10000;
+const PORT = https://projeto-int-1-1.onrender.com/api/agendamentos;
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
   console.log(`Banco: ${process.env.DB_HOST}/${process.env.DB_NAME}`);
