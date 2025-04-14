@@ -429,7 +429,7 @@
         };
 
         // Envia para o backend
-        const response = await fetch("https://projeto-int-1-1.onrender.com/api/agendamentos", {
+        const response = await fetch("https://projeto-int-1-1.onrender.com/", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -493,7 +493,7 @@
             tabelaAgendamentos.innerHTML = '';
 
             try {
-                const response = await fetch("https://projeto-int-1-1.onrender.com/api/agendamentos");
+                const response = await fetch("https://projeto-int-1-1.onrender.com/");
                 
                 if (!response.ok) {
                     const errorData = await response.json().catch(() => null);
