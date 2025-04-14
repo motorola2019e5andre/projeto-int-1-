@@ -17,4 +17,7 @@
     "express": "^4.18.2",
     "mysql2": "^3.9.7"
   }
+  "config": {
+  "engine-strict": false
+}
 }
