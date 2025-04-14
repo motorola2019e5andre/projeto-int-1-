@@ -486,48 +486,117 @@
             }
         }
 
-        // Carregar agendamentos
-        async function carregarAgendamentos() {
-            loaderAgendamentos.style.display = 'block';
-            statusAgendamentos.textContent = '';
-            tabelaAgendamentos.innerHTML = '';
+        // Formulário de agendamento - Versão corrigida
+formAgendamento.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const btnSubmit = e.target.querySelector('button[type="submit"]');
+    btnSubmit.disabled = true;
+    btnSubmit.textContent = 'Agendando...';
 
-            try {
-                const response = await fetch("https://projeto-int-1-1.onrender.com/api/agendamentos");
-                
-                if (!response.ok) {
-                    const errorData = await response.json().catch(() => null);
-                    throw new Error(errorData?.message || `Erro HTTP: ${response.status}`);
-                }
+    try {
+        // Formata a data para YYYY-MM-DD (padrão MySQL)
+        const dataFormatada = document.getElementById('dataConsulta').value;
+        
+        const formData = {
+            nome_paciente: document.getElementById('nomePaciente').value,
+            data_consulta: dataFormatada,
+            hora_consulta: document.getElementById('horaConsulta').value,
+            profissional: document.getElementById('profissional').value,
+            email: document.getElementById('emailPaciente').value,
+            telefone: document.getElementById('telefonePaciente').value,
+            observacoes: document.getElementById('observacoes').value
+        };
 
-                const agendamentos = await response.json();
-                
-                // Atualiza a tabela
-                tabelaAgendamentos.innerHTML = agendamentos.map(ag => `
-                    <tr>
-                        <td>${ag.nome_paciente}</td>
-                        <td>${new Date(ag.data_consulta).toLocaleDateString('pt-BR')}</td>
-                        <td>${ag.hora_consulta}</td>
-                        <td>${ag.profissional}</td>
-                        <td><button class="btn-ver" data-id="${ag.id}">Ver</button></td>
-                    </tr>
-                `).join('');
+        const response = await fetch("https://projeto-int-1-1.onrender.com/api/agendamentos", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData)
+        });
 
-                // Adiciona eventos aos botões
-                document.querySelectorAll('.btn-ver').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        abrirProntuario(this.getAttribute('data-id'));
-                    });
-                });
+        const result = await response.json();
 
-            } catch (error) {
-                console.error('Erro ao carregar agendamentos:', error);
-                statusAgendamentos.textContent = 'Erro ao carregar agendamentos. Tente recarregar a página.';
-            } finally {
-                loaderAgendamentos.style.display = 'none';
-            }
+        if (!response.ok) {
+            throw new Error(result.error || 'Erro ao agendar consulta');
         }
 
+        alert(`Agendamento realizado com sucesso! ID: ${result.agendamentoId}`);
+        formAgendamento.reset();
+        
+        // Recarrega a lista de agendamentos se estiver na área profissional
+        if (areaProfissional.style.display === 'block') {
+            carregarAgendamentos();
+        }
+
+    } catch (error) {
+        console.error('Erro:', error);
+        alert(`Falha no agendamento: ${error.message}`);
+    } finally {
+        btnSubmit.disabled = false;
+        btnSubmit.textContent = 'Agendar Consulta';
+    }
+});
+
+// Carregar agendamentos - Versão corrigida
+async function carregarAgendamentos() {
+    loaderAgendamentos.style.display = 'block';
+    statusAgendamentos.textContent = '';
+    tabelaAgendamentos.innerHTML = '';
+
+    try {
+        const response = await fetch("https://projeto-int-1-1.onrender.com/api/agendamentos");
+        
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => null);
+            throw new Error(errorData?.error || `Erro ao carregar agendamentos: ${response.status}`);
+        }
+
+        const agendamentos = await response.json();
+        
+        if (!Array.isArray(agendamentos)) {
+            throw new Error('Formato de dados inválido recebido do servidor');
+        }
+
+        // Formatação correta da data
+        tabelaAgendamentos.innerHTML = agendamentos.map(ag => {
+            // Formata a data (ajuste conforme o formato recebido do backend)
+            let dataFormatada;
+            try {
+                // Tenta converter a data (pode vir como string ou objeto Date)
+                const data = new Date(ag.data_consulta);
+                dataFormatada = data.toLocaleDateString('pt-BR');
+            } catch (e) {
+                dataFormatada = ag.data_consulta; // Fallback: mostra o valor original
+            }
+
+            return `
+                <tr>
+                    <td>${ag.nome_paciente || 'N/A'}</td>
+                    <td>${dataFormatada}</td>
+                    <td>${ag.hora_consulta || 'N/A'}</td>
+                    <td>${ag.profissional || 'N/A'}</td>
+                    <td><button class="btn-ver" data-id="${ag.id}">Ver</button></td>
+                </tr>
+            `;
+        }).join('');
+
+        // Adiciona eventos aos botões
+        document.querySelectorAll('.btn-ver').forEach(btn => {
+            btn.addEventListener('click', function() {
+                abrirProntuario(this.getAttribute('data-id'));
+            });
+        });
+
+    } catch (error) {
+        console.error('Erro ao carregar agendamentos:', error);
+        statusAgendamentos.textContent = error.message;
+    } finally {
+        loaderAgendamentos.style.display = 'none';
+    }
+}
+   
         // Função para abrir prontuário (exemplo)
         function abrirProntuario(id) {
             alert(`Abrindo prontuário do agendamento ID: ${id}`);
