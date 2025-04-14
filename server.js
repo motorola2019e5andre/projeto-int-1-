@@ -18,7 +18,7 @@ const pool = mysql.createPool({
 
 // Middlewares
 app.use(cors({
-  origin: process.env.ALLOWED_ORIGINS.split(',')
+  origin: process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : '*'
 }));
 app.use(express.json());
 
@@ -33,9 +33,9 @@ app.get('/health', async (req, res) => {
 });
 
 // Rota de Agendamentos (POST)
-app.post('https://projeto-int-1-1.onrender.com/', async (req, res) => {
+app.post('/api/agendamentos', async (req, res) => {
   console.log('Dados recebidos:', req.body);
-  
+
   try {
     const { nome_paciente, data_consulta, hora_consulta, profissional, email, telefone, observacoes } = req.body;
 
@@ -44,32 +44,21 @@ app.post('https://projeto-int-1-1.onrender.com/', async (req, res) => {
       return res.status(400).json({ error: "Campos obrigatórios faltando" });
     }
 
-    // Insere no banco
+    // Inserção no banco
     const [result] = await pool.execute(
-      `INSERT INTO agendamentos 
-       (nome_paciente, data_consulta, hora_consulta, profissional, email, telefone, observacoes) 
-       VALUES (?, ?, ?, ?, ?, ?, ?)`,
+      'INSERT INTO agendamentos (nome_paciente, data_consulta, hora_consulta, profissional, email, telefone, observacoes) VALUES (?, ?, ?, ?, ?, ?, ?)',
       [nome_paciente, data_consulta, hora_consulta, profissional, email, telefone, observacoes || null]
     );
 
-    res.status(201).json({ 
-      success: true,
-      id: result.insertId,
-      message: "Agendamento realizado com sucesso!"
-    });
-
+    res.status(201).json({ message: 'Agendamento criado com sucesso!', agendamentoId: result.insertId });
   } catch (error) {
-    console.error("Erro detalhado:", error);
-    res.status(500).json({ 
-      error: "Erro no servidor",
-      detalhes: process.env.NODE_ENV === 'development' ? error.message : undefined
-    });
+    console.error('Erro ao salvar agendamento:', error);
+    res.status(500).json({ error: 'Erro interno do servidor' });
   }
 });
 
-// Inicia o servidor
-const PORT = https://projeto-int-1-1.onrender.com/api/agendamentos;
+// Inicialização do servidor
+const PORT = process.env.PORT || 1000;
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
-  console.log(`Banco: ${process.env.DB_HOST}/${process.env.DB_NAME}`);
 });
