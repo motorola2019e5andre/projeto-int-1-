@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -457,7 +456,7 @@
                 };
 
                 // Envia para o backend
-                const response = await fetch('http://localhost:3000/api/agendamentos', {
+                const response = await fetch("https://projeto-int-1-1.onrender.com/api/agendamentos"), {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -487,7 +486,7 @@
         // Função para carregar agendamentos na área do profissional
         async function carregarAgendamentos() {
             try {
-                const response = await fetch('http://localhost:3000/api/agendamentos');
+                const response = await fetch("https://projeto-int-1-1.onrender.com/api/agendamentos");
                 const agendamentos = await response.json();
 
                 if (!response.ok) {
