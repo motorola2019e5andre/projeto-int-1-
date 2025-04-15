@@ -385,7 +385,7 @@
                     observacoes: document.getElementById('observacoes').value
                 };
 
-                const response = await fetch('http://localhost:1000/api/agendamentos', {
+                const response = await fetch('https://projeto-int-1.onrender.com', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -412,7 +412,7 @@
         // Função para carregar agendamentos
         async function carregarAgendamentos() {
             try {
-                const response = await fetch('http://localhost:1000/api/agendamentos');
+                const response = await fetch('https://projeto-int-1.onrender.com');
                 const agendamentos = await response.json();
 
                 if (!response.ok) {
