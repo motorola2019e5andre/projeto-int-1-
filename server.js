@@ -16,7 +16,7 @@ const pool = mysql.createPool({
   queueLimit: 0
 });
 
-/// Middlewares
+// Middlewares
 const allowedOrigins = [
   'https://motorola2019e5andre.github.io',
   'http://localhost:1000'
@@ -32,22 +32,19 @@ app.use(cors({
   }
 }));
 
-app.use(express.json()); // ✅ Aqui fora da rota, uma única vez
+app.use(express.json()); // Permite receber JSON no corpo da requisição
 
-// Agora sim vem a rota
+// Rota de Agendamentos (POST)
 app.post('/api/agendamentos', async (req, res) => {
   console.log('Dados recebidos:', req.body);
-});
 
   try {
     const { nome_paciente, data_consulta, hora_consulta, profissional, email, telefone, observacoes } = req.body;
 
-    // Validação
     if (!nome_paciente || !data_consulta || !hora_consulta || !profissional || !email || !telefone) {
       return res.status(400).json({ error: "Campos obrigatórios faltando" });
     }
 
-    // Inserção no banco
     const [result] = await pool.execute(
       'INSERT INTO agendamentos (nome_paciente, data_consulta, hora_consulta, profissional, email, telefone, observacoes) VALUES (?, ?, ?, ?, ?, ?, ?)',
       [nome_paciente, data_consulta, hora_consulta, profissional, email, telefone, observacoes || null]
