@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -5,7 +6,203 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Clínica Mentalize | Sistema de Agendamentos</title>
     <style>
-        /* Seu CSS permanece o mesmo */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+
+        header {
+            background-color: #003cff;
+            color: #fff;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.5em;
+        }
+
+        nav {
+            background-color: #fff;
+            padding: 15px 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        nav a {
+            color: #003cff;
+            text-decoration: none;
+            font-weight: bold;
+            margin: 0 15px;
+            padding: 5px 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        nav a:hover {
+            background-color: #003cff;
+            color: white;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+
+        .card {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .card h2 {
+            color: #003cff;
+            border-bottom: 2px solid #003cff;
+            padding-bottom: 10px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        form input, form select, form textarea {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+
+        form button {
+            background-color: #003cff;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: background-color 0.3s;
+        }
+
+        form button:hover {
+            background-color: #002aa3;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        table th, table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        table th {
+            background-color: #003cff;
+            color: white;
+        }
+
+        table tr:hover {
+            background-color: #f0f6ff;
+        }
+
+        footer {
+            background-color: #003cff;
+            color: #fff;
+            text-align: center;
+            padding: 15px 0;
+            margin-top: 30px;
+        }
+
+        .login-area {
+            text-align: right;
+            padding: 10px;
+            background-color: #e6f0ff;
+        }
+
+        /* Estilo do Mapa */
+        .map-container {
+            margin-top: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .map-container iframe {
+            width: 100%;
+            height: 400px;
+            border: none;
+        }
+
+        /* Modal de Login */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 25px;
+            width: 350px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal h2 {
+            color: #003cff;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #003cff;
+        }
+
+        .error-message {
+            color: red;
+            text-align: center;
+            margin-top: 10px;
+            font-size: 0.9em;
+        }
+
+        /* Área do Profissional (inicialmente oculta) */
+        #areaProfissional {
+            display: none;
+        }
+
+        .logout-btn {
+            background-color: #ff3c00;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
     </style>
 </head>
 <body>
@@ -18,7 +215,7 @@
     <div class="login-area">
         <span id="userGreeting"></span>
         <a href="#" id="loginLink">Área do Profissional</a>
-        <button id="logoutBtn" class="logout-btn" style="display: none;">Sair</button>
+        <button id="logoutBtn" class="logout-btn">Sair</button>
     </div>
 
     <nav>
@@ -36,16 +233,15 @@
             <section id="agendamento" class="card">
                 <h2>Agendar Consulta</h2>
                 <form id="formAgendamento">
-                    <input type="text" id="nomePaciente" placeholder="Nome do Paciente" required>
-                    <input type="date" id="dataConsulta" required>
-                    <input type="time" id="horaConsulta" required>
-                    <select id="profissional" required>
+                    <input type="text" placeholder="Nome do Paciente" required>
+                    <input type="date" required>
+                    <input type="time" required>
+                    <select required>
                         <option value="">Selecione o Profissional</option>
-                        <option value="Dra. Cicera Santana">Dra. Cicera Santana</option>
+                        <option value="psicologo1">Dra. Cicera Santana</option>
+          
                     </select>
-                    <input type="email" id="emailPaciente" placeholder="E-mail" required>
-                    <input type="tel" id="telefonePaciente" placeholder="Telefone" required>
-                    <textarea id="observacoes" placeholder="Observações" rows="3"></textarea>
+                    <textarea placeholder="Observações" rows="3"></textarea>
                     <button type="submit">Agendar Consulta</button>
                 </form>
             </section>
@@ -72,29 +268,39 @@
             </section>
         </div>
 
-        <!-- Área do Profissional -->
-        <div id="areaProfissional" style="display: none;">
+        <!-- Área do Profissional (oculta até o login) -->
+        <div id="areaProfissional">
             <section class="card">
                 <h2>Bem-vindo, <span id="profissionalNome"></span></h2>
                 <p>Últimos agendamentos:</p>
-                <div class="loader" id="loaderAgendamentos"></div>
-                <p class="status-message" id="statusAgendamentos"></p>
-                <table id="tabelaAgendamentos">
+                <table>
                     <thead>
                         <tr>
                             <th>Paciente</th>
                             <th>Data</th>
                             <th>Hora</th>
-                            <th>Profissional</th>
                             <th>Ações</th>
                         </tr>
                     </thead>
-                    <tbody></tbody>
+                    <tbody>
+                        <tr>
+                            <td>Maria Oliveira</td>
+                            <td>15/03/2024</td>
+                            <td>14:00</td>
+                            <td><a href="#prontuario">Abrir prontuário</a></td>
+                        </tr>
+                        <tr>
+                            <td>João Santos</td>
+                            <td>16/03/2024</td>
+                            <td>10:30</td>
+                            <td><a href="#prontuario">Abrir prontuário</a></td>
+                        </tr>
+                    </tbody>
                 </table>
             </section>
 
             <section id="prontuario" class="card">
-                <h2>Prontuários</h2>
+                <h2>Prontuários Completo</h2>
                 <table>
                     <thead>
                         <tr>
@@ -104,7 +310,16 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Dados serão carregados dinamicamente -->
+                        <tr>
+                            <td>Maria Oliveira</td>
+                            <td>15/03/2024</td>
+                            <td><a href="#ver">Visualizar/Editar</a></td>
+                        </tr>
+                        <tr>
+                            <td>João Santos</td>
+                            <td>10/03/2024</td>
+                            <td><a href="#ver">Visualizar/Editar</a></td>
+                        </tr>
                     </tbody>
                 </table>
             </section>
@@ -130,74 +345,90 @@
     </footer>
 
     <script>
-        // Função para checar se o usuário está logado
-        function checkLoginStatus() {
-            const user = sessionStorage.getItem('user'); // Usando sessionStorage para login temporário
+        // Controle do Login
+        document.addEventListener('DOMContentLoaded', function() {
+            const modal = document.getElementById('loginModal');
             const loginLink = document.getElementById('loginLink');
             const logoutBtn = document.getElementById('logoutBtn');
+            const closeBtn = document.querySelector('.close');
+            const loginForm = document.getElementById('loginForm');
+            const errorMessage = document.getElementById('errorMessage');
+            const areaPublica = document.getElementById('areaPublica');
             const areaProfissional = document.getElementById('areaProfissional');
             const userGreeting = document.getElementById('userGreeting');
             const profissionalNome = document.getElementById('profissionalNome');
 
-            if (user) {
-                // Usuário está logado
-                const parsedUser = JSON.parse(user);
-                loginLink.style.display = 'none';
-                logoutBtn.style.display = 'inline-block';
-                areaProfissional.style.display = 'block';
-                userGreeting.textContent = `Olá, ${parsedUser.name}`;
-                profissionalNome.textContent = parsedUser.name;
-            } else {
-                // Usuário não está logado
-                loginLink.style.display = 'inline-block';
-                logoutBtn.style.display = 'none';
-                areaProfissional.style.display = 'none';
-                userGreeting.textContent = '';
+            // Credenciais válidas (simuladas)
+            const validUsers = {
+                'cicera.santana': { password: 'senha123', nome: 'Dra. Cicera Santana' },
+            };
+
+            // Verificar se já está logado (simulação)
+            checkLogin();
+
+            // Abrir modal
+            loginLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                modal.style.display = 'block';
+            });
+
+            // Fechar modal
+            closeBtn.addEventListener('click', closeModal);
+            window.addEventListener('click', function(e) {
+                if (e.target === modal) closeModal();
+            });
+
+            // Logout
+            logoutBtn.addEventListener('click', function() {
+                localStorage.removeItem('loggedInUser');
+                checkLogin();
+            });
+
+            // Validação de login
+            loginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const username = document.getElementById('username').value.trim();
+                const password = document.getElementById('password').value;
+
+                if (validUsers[username] && validUsers[username].password === password) {
+                    // Login bem-sucedido
+                    localStorage.setItem('loggedInUser', JSON.stringify({
+                        username: username,
+                        nome: validUsers[username].nome
+                    }));
+                    closeModal();
+                    checkLogin();
+                } else {
+                    errorMessage.textContent = 'Usuário ou senha incorretos!';
+                }
+            });
+
+            function closeModal() {
+                modal.style.display = 'none';
+                errorMessage.textContent = '';
+                loginForm.reset();
             }
-        }
 
-        // Função para realizar logout
-        function logout() {
-            sessionStorage.removeItem('user'); // Remover dados de sessão
-            checkLoginStatus();
-        }
-
-        // Função para realizar login
-        document.getElementById('loginForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-
-            // Exemplo simples de autenticação
-            if (username === 'admin' && password === '1234') {
-                const user = { name: 'Profissional Admin' }; // Exemplo de usuário
-                sessionStorage.setItem('user', JSON.stringify(user)); // Armazenando no sessionStorage
-                checkLoginStatus();
-                closeModal();
-            } else {
-                document.getElementById('errorMessage').textContent = 'Usuário ou senha inválidos';
+            function checkLogin() {
+                const user = JSON.parse(localStorage.getItem('loggedInUser'));
+                if (user) {
+                    // Usuário logado
+                    loginLink.style.display = 'none';
+                    logoutBtn.style.display = 'inline-block';
+                    userGreeting.textContent = `Olá, ${user.nome.split(' ')[1]}!`;
+                    profissionalNome.textContent = user.nome;
+                    areaPublica.style.display = 'none';
+                    areaProfissional.style.display = 'block';
+                } else {
+                    // Usuário não logado
+                    loginLink.style.display = 'inline-block';
+                    logoutBtn.style.display = 'none';
+                    userGreeting.textContent = '';
+                    areaPublica.style.display = 'block';
+                    areaProfissional.style.display = 'none';
+                }
             }
         });
-
-        // Função para fechar o modal de login
-        function closeModal() {
-            document.getElementById('loginModal').style.display = 'none';
-        }
-
-        // Evento para o botão de logout
-        document.getElementById('logoutBtn').addEventListener('click', logout);
-
-        // Evento para abrir o modal de login
-        document.getElementById('loginLink').addEventListener('click', function() {
-            document.getElementById('loginModal').style.display = 'block';
-        });
-
-        // Fechar o modal de login quando o botão de fechar for clicado
-        document.querySelector('.close').addEventListener('click', closeModal);
-
-        // Verificar login status ao carregar a página
-        window.onload = checkLoginStatus;
     </script>
-
 </body>
 </html>
