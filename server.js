@@ -19,7 +19,7 @@ const pool = mysql.createPool({
 // Middlewares
 const allowedOrigins = [
   'https://motorola2019e5andre.github.io',
-  'http://localhost:5500' // útil se for testar local também
+  'http://localhost:1000' // útil se for testar local também
 ];
 
 app.use(cors({
