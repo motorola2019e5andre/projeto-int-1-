@@ -447,14 +447,14 @@
             try {
                 // Coleta os dados do formulário
                 const formData = {
-                    nome: document.getElementById('nomePaciente').value,
-                    data: document.getElementById('dataConsulta').value,
-                    hora: document.getElementById('horaConsulta').value,
-                    profissional: document.getElementById('profissional').value,
-                    email: document.getElementById('emailPaciente').value,
-                    telefone: document.getElementById('telefonePaciente').value,
-                    observacoes: document.getElementById('observacoes').value
-                };
+    nome_paciente: document.getElementById('nomePaciente').value,
+    data_consulta: document.getElementById('dataConsulta').value,
+    hora_consulta: document.getElementById('horaConsulta').value,
+    profissional: document.getElementById('profissional').value,
+    email: document.getElementById('emailPaciente').value,
+    telefone: document.getElementById('telefonePaciente').value,
+    observacoes: document.getElementById('observacoes').value
+};
 
                 // Envia para o backend
                 const response = await fetch('http://localhost:1000/api/agendamentos', {
