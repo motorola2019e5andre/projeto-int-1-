@@ -1,11 +1,10 @@
-app.get('/', (req, res) => {
-  res.json({ message: 'API da Clínica Mentalize' });
-});
-
+// backend/server.js
 require('dotenv').config();
 const express = require('express');
 const mysql = require('mysql2/promise');
 const cors = require('cors');
+
+// Inicializa o app Express primeiro
 const app = express();
 
 // Configuração do MySQL
@@ -22,8 +21,7 @@ const pool = mysql.createPool({
 // Middlewares
 const allowedOrigins = [
   'https://motorola2019e5andre.github.io',
-  'http://localhost:1000',
-  'https://seusitefrontend.com' // ADICIONE A URL DO SEU FRONTEND AQUI
+  'http://localhost:1000'
 ];
 
 app.use(cors({
@@ -35,15 +33,17 @@ app.use(cors({
     }
   }
 }));
-
-app.use(express.json());
-
-// Rota raiz
 app.get('/', (req, res) => {
   res.json({ message: 'API da Clínica Mentalize' });
 });
 
-// Rota para listar agendamentos (GET)
+app.use(express.json());
+
+// Rotas
+app.get('/', (req, res) => {
+  res.json({ message: 'API da Clínica Mentalize' });
+});
+
 app.get('/api/agendamentos', async (req, res) => {
   try {
     const [rows] = await pool.query('SELECT * FROM agendamentos');
@@ -54,7 +54,6 @@ app.get('/api/agendamentos', async (req, res) => {
   }
 });
 
-// Rota para criar agendamentos (POST)
 app.post('/api/agendamentos', async (req, res) => {
   console.log('Dados recebidos:', req.body);
 
