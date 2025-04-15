@@ -37,7 +37,6 @@ app.use(express.json()); // ✅ Aqui fora da rota, uma única vez
 // Agora sim vem a rota
 app.post('/api/agendamentos', async (req, res) => {
   console.log('Dados recebidos:', req.body);
-  ...
 });
 
   try {
