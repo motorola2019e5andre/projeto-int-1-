@@ -16,10 +16,10 @@ const pool = mysql.createPool({
   queueLimit: 0
 });
 
-// Middlewares
+/// Middlewares
 const allowedOrigins = [
   'https://motorola2019e5andre.github.io',
-  'http://localhost:1000' // útil se for testar local também
+  'http://localhost:1000'
 ];
 
 app.use(cors({
@@ -32,20 +32,13 @@ app.use(cors({
   }
 }));
 
+app.use(express.json()); // ✅ Aqui fora da rota, uma única vez
 
-// Health Check
-app.get('/health', async (req, res) => {
-  try {
-    await pool.query('SELECT 1');
-    res.json({ status: 'healthy', database: 'connected' });
-  } catch (error) {
-    res.status(500).json({ status: 'unhealthy', database: 'disconnected' });
-  }
-});
-
-// Rota de Agendamentos (POST)
+// Agora sim vem a rota
 app.post('/api/agendamentos', async (req, res) => {
   console.log('Dados recebidos:', req.body);
+  ...
+});
 
   try {
     const { nome_paciente, data_consulta, hora_consulta, profissional, email, telefone, observacoes } = req.body;
