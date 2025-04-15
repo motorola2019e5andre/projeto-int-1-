@@ -17,10 +17,21 @@ const pool = mysql.createPool({
 });
 
 // Middlewares
+const allowedOrigins = [
+  'https://motorola2019e5andre.github.io',
+  'http://localhost:5500' // útil se for testar local também
+];
+
 app.use(cors({
-  origin: 'https://motorola2019e5andre.github.io'
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Origem não permitida pelo CORS'));
+    }
+  }
 }));
-app.use(express.json());
+
 
 // Health Check
 app.get('/health', async (req, res) => {
