@@ -18,7 +18,7 @@ const pool = mysql.createPool({
 
 // Middlewares
 app.use(cors({
-  origin: process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : '*'
+  origin: 'https://motorola2019e5andre.github.io'
 }));
 app.use(express.json());
 
