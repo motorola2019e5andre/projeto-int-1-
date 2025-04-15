@@ -1,4 +1,3 @@
-/// backend/server.js
 require('dotenv').config();
 const express = require('express');
 const mysql = require('mysql2/promise');
@@ -19,7 +18,8 @@ const pool = mysql.createPool({
 // Middlewares
 const allowedOrigins = [
   'https://motorola2019e5andre.github.io',
-  'http://localhost:1000'
+  'http://localhost:1000',
+  'https://seusitefrontend.com' // ADICIONE A URL DO SEU FRONTEND AQUI
 ];
 
 app.use(cors({
@@ -32,21 +32,35 @@ app.use(cors({
   }
 }));
 
-app.use(express.json()); // ✅ Aqui fora da rota, uma única vez
+app.use(express.json());
 
-// Rota de Agendamentos (POST)
+// Rota raiz
+app.get('/', (req, res) => {
+  res.json({ message: 'API da Clínica Mentalize' });
+});
+
+// Rota para listar agendamentos (GET)
+app.get('/api/agendamentos', async (req, res) => {
+  try {
+    const [rows] = await pool.query('SELECT * FROM agendamentos');
+    res.json(rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Erro ao buscar agendamentos' });
+  }
+});
+
+// Rota para criar agendamentos (POST)
 app.post('/api/agendamentos', async (req, res) => {
   console.log('Dados recebidos:', req.body);
 
   try {
     const { nome_paciente, data_consulta, hora_consulta, profissional, email, telefone, observacoes } = req.body;
 
-    // Validação
     if (!nome_paciente || !data_consulta || !hora_consulta || !profissional || !email || !telefone) {
       return res.status(400).json({ error: "Campos obrigatórios faltando" });
     }
 
-    // Inserção no banco
     const [result] = await pool.execute(
       'INSERT INTO agendamentos (nome_paciente, data_consulta, hora_consulta, profissional, email, telefone, observacoes) VALUES (?, ?, ?, ?, ?, ?, ?)',
       [nome_paciente, data_consulta, hora_consulta, profissional, email, telefone, observacoes || null]
@@ -64,4 +78,3 @@ const PORT = process.env.PORT || 1000;
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
 });
-
