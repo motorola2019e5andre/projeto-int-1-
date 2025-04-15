@@ -1,4 +1,4 @@
-// backend/server.js
+/// backend/server.js
 require('dotenv').config();
 const express = require('express');
 const mysql = require('mysql2/promise');
@@ -32,7 +32,7 @@ app.use(cors({
   }
 }));
 
-app.use(express.json()); // Permite receber JSON no corpo da requisição
+app.use(express.json()); // ✅ Aqui fora da rota, uma única vez
 
 // Rota de Agendamentos (POST)
 app.post('/api/agendamentos', async (req, res) => {
@@ -41,10 +41,12 @@ app.post('/api/agendamentos', async (req, res) => {
   try {
     const { nome_paciente, data_consulta, hora_consulta, profissional, email, telefone, observacoes } = req.body;
 
+    // Validação
     if (!nome_paciente || !data_consulta || !hora_consulta || !profissional || !email || !telefone) {
       return res.status(400).json({ error: "Campos obrigatórios faltando" });
     }
 
+    // Inserção no banco
     const [result] = await pool.execute(
       'INSERT INTO agendamentos (nome_paciente, data_consulta, hora_consulta, profissional, email, telefone, observacoes) VALUES (?, ?, ?, ?, ?, ?, ?)',
       [nome_paciente, data_consulta, hora_consulta, profissional, email, telefone, observacoes || null]
@@ -62,3 +64,4 @@ const PORT = process.env.PORT || 1000;
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
 });
+
