@@ -129,7 +129,6 @@
             background-color: #e6f0ff;
         }
 
-        /* Estilo do Mapa */
         .map-container {
             margin-top: 20px;
             border-radius: 10px;
@@ -143,7 +142,6 @@
             border: none;
         }
 
-        /* Modal de Login */
         .modal {
             display: none;
             position: fixed;
@@ -188,7 +186,6 @@
             font-size: 0.9em;
         }
 
-        /* Área do Profissional (inicialmente oculta) */
         #areaProfissional {
             display: none;
         }
@@ -226,9 +223,7 @@
     </nav>
 
     <div class="container">
-        <!-- Área Pública -->
         <div id="areaPublica">
-            <!-- Seção de Agendamento -->
             <section id="agendamento" class="card">
                 <h2>Agendar Consulta</h2>
                 <form id="formAgendamento">
@@ -240,14 +235,13 @@
                         <option value="Dra. Cicera Santana">Dra. Cicera Santana</option>
                     </select>
                     <input type="email" id="emailPaciente" placeholder="E-mail" required>
-                    <input type="tel" id="telefonePaciente" placeholder="Telefone" required>
+                    <input type="tel" id="telefonePaciente" placeholder="Telefone (com DDD)" required>
                     <textarea id="observacoes" placeholder="Observações" rows="3"></textarea>
                     <button type="submit">Agendar Consulta</button>
                 </form>
             </section>
         </div>
 
-        <!-- Área do Profissional (oculta até o login) -->
         <div id="areaProfissional">
             <section class="card">
                 <h2>Bem-vindo, <span id="profissionalNome"></span></h2>
@@ -267,7 +261,6 @@
         </div>
     </div>
 
-    <!-- Modal de Login -->
     <div id="loginModal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
@@ -298,33 +291,27 @@
         const userGreeting = document.getElementById('userGreeting');
         const profissionalNome = document.getElementById('profissionalNome');
 
-        // Credenciais válidas (simuladas)
         const validUsers = {
             'cicera.santana': { password: 'senha123', nome: 'Dra. Cicera Santana' },
         };
 
-        // Verificar se já está logado (simulação)
         checkLogin();
 
-        // Abrir modal
         loginLink.addEventListener('click', function(e) {
             e.preventDefault();
             modal.style.display = 'block';
         });
 
-        // Fechar modal
         closeBtn.addEventListener('click', closeModal);
         window.addEventListener('click', function(e) {
             if (e.target === modal) closeModal();
         });
 
-        // Logout
         logoutBtn.addEventListener('click', function() {
             localStorage.removeItem('loggedInUser');
             checkLogin();
         });
 
-        // Validação de login
         loginForm.addEventListener('submit', function(e) {
             e.preventDefault();
             const username = document.getElementById('username').value.trim();
@@ -367,7 +354,7 @@
             }
         }
 
-        // Enviar agendamento
+        // FUNÇÃO DE AGENDAMENTO ATUALIZADA
         document.getElementById('formAgendamento').addEventListener('submit', async function(e) {
             e.preventDefault();
             const btnSubmit = e.target.querySelector('button[type="submit"]');
@@ -375,44 +362,56 @@
             btnSubmit.textContent = 'Agendando...';
 
             try {
+                const telefone = document.getElementById('telefonePaciente').value.replace(/\D/g, '');
+                const dataInput = document.getElementById('dataConsulta').value;
+                
                 const formData = {
                     nome_paciente: document.getElementById('nomePaciente').value,
-                    data_consulta: document.getElementById('dataConsulta').value,
+                    data_consulta: dataInput,
                     hora_consulta: document.getElementById('horaConsulta').value,
                     profissional: document.getElementById('profissional').value,
                     email: document.getElementById('emailPaciente').value,
-                    telefone: document.getElementById('telefonePaciente').value,
-                    observacoes: document.getElementById('observacoes').value
+                    telefone: telefone,
+                    observacoes: document.getElementById('observacoes').value || null
                 };
 
+                // Validação básica no cliente
+                if (!formData.email.includes('@')) {
+                    throw new Error('Por favor, insira um e-mail válido');
+                }
+
+                if (telefone.length < 10 || telefone.length > 11) {
+                    throw new Error('Telefone deve ter 10 ou 11 dígitos (com DDD)');
+                }
+
                 const response = await fetch('https://projeto-int-1.onrender.com/api/agendamentos', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  body: JSON.stringify(formData)
-})
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
 
                 const result = await response.json();
 
                 if (!response.ok) {
-                    throw new Error(result.error || 'Erro ao agendar consulta');
+                    throw new Error(result.error || result.message || 'Erro no servidor');
                 }
 
-                alert(`Agendamento #${result.agendamentoId} realizado com sucesso!`);
+                alert(`✅ Agendamento confirmado!\nNúmero: ${result.agendamentoId}\nData: ${dataInput.split('-').reverse().join('/')}\nHora: ${formData.hora_consulta}`);
                 e.target.reset();
             } catch (error) {
-                alert(`Falha no agendamento: ${error.message}`);
+                console.error('Erro no agendamento:', error);
+                alert(`❌ ${error.message}`);
             } finally {
                 btnSubmit.disabled = false;
                 btnSubmit.textContent = 'Agendar Consulta';
             }
         });
 
-        // Função para carregar agendamentos
         async function carregarAgendamentos() {
             try {
-               const response = await fetch('https://projeto-int-1.onrender.com/api/agendamentos');
+                const response = await fetch('https://projeto-int-1.onrender.com/api/agendamentos');
                 const agendamentos = await response.json();
 
                 if (!response.ok) {
@@ -425,7 +424,7 @@
                     const row = document.createElement('tr');
                     row.innerHTML = `
                         <td>${agendamento.nome_paciente}</td>
-                        <td>${agendamento.data_consulta}</td>
+                        <td>${new Date(agendamento.data_consulta).toLocaleDateString('pt-BR')}</td>
                         <td>${agendamento.hora_consulta}</td>
                         <td>
                             <button>Ver Detalhes</button>
@@ -434,7 +433,7 @@
                     tbody.appendChild(row);
                 });
             } catch (error) {
-                console.error(error);
+                console.error('Erro ao carregar agendamentos:', error);
             }
         }
     });
